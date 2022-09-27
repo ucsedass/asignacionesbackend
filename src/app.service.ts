@@ -31,7 +31,7 @@ var config = {
 var sql = require('mssql');
 @Injectable()
 export class AppService {
-  async traerInfoConceptos() {
+  async traerFechasVencimientos() {
     // sql.connect(config, function (err) {
     //   if (err) console.log(err);
     //   var request = new sql.Request();
@@ -46,6 +46,28 @@ export class AppService {
       await sql.connect(config);
       const result =
         await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto = 1000`;
+      return result.recordsets[0];
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async traerConceptos() {
+    try {
+      await sql.connect(config);
+      const result =
+        await sql.query`select distinct codConcepto,DescripcionConcepto from InfoConceptos`;
+      return result.recordsets[0];
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async traerTipoConceptos() {
+    try {
+      await sql.connect(config);
+      const result =
+        await sql.query`select distinct codTipoConcepto,DescripcionTipoConcepto from InfoConceptos`;
       return result.recordsets[0];
     } catch (err) {
       return err;

@@ -5,13 +5,22 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/conceptos')
-  traerConceptos(): any {
-    return this.appService.traerInfoConceptos();
+  @Get('/fechasvencimientos')
+  traerFechasVencimientos(): any {
+    return this.appService.traerFechasVencimientos();
   }
 
   @Get('/sedes')
   traerSedes(): any {
     return this.appService.traerSedes();
+  }
+  @Get('/conceptos')
+  traerConceptos(): any {
+    return this.appService.traerConceptos();
+  }
+
+  @Get('/tipoconceptos')
+  traerTipoConceptos(): any {
+    return this.appService.traerTipoConceptos();
   }
 }

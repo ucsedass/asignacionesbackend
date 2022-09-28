@@ -1,13 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Body, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/fechasvencimientos')
-  traerFechasVencimientos(): any {
-    return this.appService.traerFechasVencimientos();
+  @Post('/fechasvencimientos')
+  traerFechasVencimientos(@Body() body: any): any {
+    return this.appService.traerFechasVencimientos(body);
   }
 
   @Get('/sedes')

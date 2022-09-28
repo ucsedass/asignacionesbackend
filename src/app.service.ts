@@ -31,7 +31,7 @@ var config = {
 var sql = require('mssql');
 @Injectable()
 export class AppService {
-  async traerFechasVencimientos() {
+  async traerFechasVencimientos(body: any) {
     // sql.connect(config, function (err) {
     //   if (err) console.log(err);
     //   var request = new sql.Request();
@@ -42,10 +42,12 @@ export class AppService {
     //   });
     // });
 
+    const { codConcepto, codTipoConcepto, idSede } = body;
+
     try {
       await sql.connect(config);
       const result =
-        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto = 1000`;
+        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede}`;
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -56,7 +58,7 @@ export class AppService {
     try {
       await sql.connect(config);
       const result =
-        await sql.query`select distinct codConcepto,DescripcionConcepto from InfoConceptos`;
+        await sql.query`select distinct codConcepto,DescripcionConcepto from InfoConceptos order by codConcepto`;
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -67,7 +69,7 @@ export class AppService {
     try {
       await sql.connect(config);
       const result =
-        await sql.query`select distinct codTipoConcepto,DescripcionTipoConcepto from InfoConceptos`;
+        await sql.query`select distinct codTipoConcepto,DescripcionTipoConcepto from InfoConceptos order by codTipoConcepto`;
       return result.recordsets[0];
     } catch (err) {
       return err;

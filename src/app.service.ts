@@ -85,4 +85,14 @@ export class AppService {
       return error;
     }
   }
+
+  async agregarFechasVencimientos() {
+    try {
+      let pool = await sql.connect(config);
+      let result = await pool.request().execute('sedesTraerTodas');
+      return result.recordsets[0];
+    } catch (error) {
+      return error;
+    }
+  }
 }

@@ -86,11 +86,15 @@ export class AppService {
     }
   }
 
-  async agregarFechasVencimientos() {
+  async agregarFechasVencimientos(body: any) {
+    console.log('DATOS PARA EL SP::', body);
     try {
       let pool = await sql.connect(config);
-      let result = await pool.request().execute('sedesTraerTodas');
-      return result.recordsets[0];
+      let result = await pool
+        .request()
+        .input()
+        .execute('ConceptoCCActualizarPrecio ');
+      return result;
     } catch (error) {
       return error;
     }

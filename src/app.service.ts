@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import Moment from 'moment';
 
 require('tls').DEFAULT_MIN_VERSION = 'TLSv1';
 
@@ -15,39 +16,17 @@ var config = {
   },
 };
 
-// var config = {
-//   user: 'sa',
-//   password: '368DataPhobia',
-//   server: 'TCUENTASPRUEBA',
-//   database: 'dbtcj',
-//   options: {
-//     trustedConnection: true,
-//     encrypt: true,
-//     enableArithAbort: true,
-//     trustServerCertificate: true,
-//   },
-// };
-
 var sql = require('mssql');
 @Injectable()
 export class AppService {
   async traerFechasVencimientos(body: any) {
-    // sql.connect(config, function (err) {
-    //   if (err) console.log(err);
-    //   var request = new sql.Request();
-    //   request.query(`select * from MulCuentadantes`, function (err, recordset) {
-    //     if (err) console.log(err);
-    //     console.log(recordset);// aqui muestro los datos correctamente
-    //     sql.close();
-    //   });
-    // });
-
     const { codConcepto, codTipoConcepto, idSede } = body;
 
     try {
       await sql.connect(config);
       const result =
-        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede}`;
+        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} `;
+      console.log(result.recordsets[0]);
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -87,15 +66,51 @@ export class AppService {
   }
 
   async agregarFechasVencimientos(body: any) {
-    console.log('DATOS PARA EL SP::', body);
+    const {
+      codConcepto,
+      idPeriodoAcademico,
+      fechaInicioVigencia,
+      fechaFinVigencia,
+      importeVto1,
+      importeVto2,
+      importeVto3,
+      idUsuario,
+    } = body;
+
+    console.log(
+      'PARAMETROS ',
+      codConcepto,
+      idPeriodoAcademico,
+      fechaInicioVigencia,
+      fechaFinVigencia,
+      importeVto1,
+      importeVto2,
+      importeVto3,
+      idUsuario,
+    );
     try {
       let pool = await sql.connect(config);
       let result = await pool
         .request()
-        .input()
+        .input('codConcepto', sql.Decimal, parseFloat(codConcepto))
+        .input(
+          'idPeriodoAcademico',
+          sql.Decimal,
+          parseFloat(idPeriodoAcademico),
+        )
+        .input('fechaInicioVigencia', sql.Date, fechaInicioVigencia)
+        .input('fechaFinVigencia', sql.Date, fechaFinVigencia)
+        .input('importeVto1', sql.Decimal, parseFloat(importeVto1))
+        .input('importeVto2', sql.Decimal, parseFloat(importeVto2))
+        .input('importeVto3', sql.Decimal, parseFloat(importeVto3))
+        .input('idUsuario', sql.Decimal, parseFloat(idUsuario))
         .execute('ConceptoCCActualizarPrecio ');
+
+      console.log('exito');
       return result;
     } catch (error) {
+      console.log('error:', error);
+
       return error;
     }
   }

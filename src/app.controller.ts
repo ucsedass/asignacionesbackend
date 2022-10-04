@@ -9,6 +9,12 @@ export class AppController {
   traerFechasVencimientos(@Body() body: any): any {
     return this.appService.traerFechasVencimientos(body);
   }
+
+  @Post('/fechasvencimientosvigentes')
+  traerFechasVencimientosVigentes(@Body() body: any): any {
+    return this.appService.traerFechasVencimientosVigentes(body);
+  }
+
   @Post('/agregarfechasvencimientos')
   agregarFechasVencimientos(@Body() body: any): any {
     return this.appService.agregarFechasVencimientos(body);

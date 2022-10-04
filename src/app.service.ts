@@ -20,13 +20,29 @@ var sql = require('mssql');
 @Injectable()
 export class AppService {
   async traerFechasVencimientos(body: any) {
-    const { codConcepto, codTipoConcepto, idSede } = body;
-
+    const { codConcepto, codTipoConcepto, idSede, idPeriodoAcademico } = body;
+    console.log(body);
     try {
       await sql.connect(config);
+
       const result =
-        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} `;
-      console.log(result.recordsets[0]);
+        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico}`;
+      // console.log(result.recordsets[0]);
+      return result.recordsets[0];
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async traerFechasVencimientosVigentes(body: any) {
+    const { codConcepto, codTipoConcepto, idSede, idPeriodoAcademico } = body;
+    console.log(body);
+    try {
+      await sql.connect(config);
+
+      const result =
+        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico=${idPeriodoAcademico} and FechaFinVigenciaPrecio >= GETDATE() `;
+      // console.log(result.recordsets[0]);
       return result.recordsets[0];
     } catch (err) {
       return err;

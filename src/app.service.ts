@@ -36,7 +36,7 @@ export class AppService {
 
   async traerFechasVencimientosVigentes(body: any) {
     const { codConcepto, codTipoConcepto, idSede, idPeriodoAcademico } = body;
-    console.log(body);
+    console.log('ESTO ES LO QUE LLEGAAAA::', body);
     try {
       await sql.connect(config);
 

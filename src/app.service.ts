@@ -20,13 +20,19 @@ var sql = require('mssql');
 @Injectable()
 export class AppService {
   async traerFechasVencimientos(body: any) {
-    const { codConcepto, codTipoConcepto, idSede, idPeriodoAcademico } = body;
-    console.log(body);
+    const {
+      codConcepto,
+      codTipoConcepto,
+      idSede,
+      idPeriodoAcademico,
+      idPrograma,
+    } = body;
+    console.log('aqui IDPROGRAMA', body);
     try {
       await sql.connect(config);
 
       const result =
-        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico}`;
+        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico}and idPrograma = ${idPrograma}`;
       // console.log(result.recordsets[0]);
       return result.recordsets[0];
     } catch (err) {
@@ -49,6 +55,16 @@ export class AppService {
     }
   }
 
+  async traerProgramaAcademico() {
+    try {
+      await sql.connect(config);
+      const result =
+        await sql.query`select distinct idPrograma,NombreProgramaAcademico from InfoConceptos order by NombreProgramaAcademico`;
+      return result.recordsets[0];
+    } catch (error) {
+      return error;
+    }
+  }
   async traerConceptos() {
     try {
       await sql.connect(config);

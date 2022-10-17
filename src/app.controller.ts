@@ -33,4 +33,8 @@ export class AppController {
   traerTipoConceptos(): any {
     return this.appService.traerTipoConceptos();
   }
+  @Get('/programaacademico')
+  traerProgramaAcademico(): any {
+    return this.appService.traerProgramaAcademico();
+  }
 }

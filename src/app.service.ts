@@ -27,13 +27,20 @@ export class AppService {
       idPeriodoAcademico,
       idPrograma,
     } = body;
-    console.log('aqui IDPROGRAMA', body);
+
+    console.log(body);
+
     try {
+      let a;
+      if (body.idPrograma === '0') {
+        a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma is null`;
+      } else {
+        a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma=${idPrograma} `;
+      }
       await sql.connect(config);
 
-      const result =
-        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico}and idPrograma = ${idPrograma}`;
-      // console.log(result.recordsets[0]);
+      const result = await sql.query(a);
+
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -41,13 +48,23 @@ export class AppService {
   }
 
   async traerFechasVencimientosVigentes(body: any) {
-    const { codConcepto, codTipoConcepto, idSede, idPeriodoAcademico } = body;
-    console.log('ESTO ES LO QUE LLEGAAAA::', body);
+    const {
+      codConcepto,
+      codTipoConcepto,
+      idSede,
+      idPeriodoAcademico,
+      idPrograma,
+    } = body;
     try {
+      let a;
+      if (body.idPrograma === '0') {
+        a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma is null and FechaFinVigenciaPrecio >= GETDATE()`;
+      } else {
+        a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma=${idPrograma} and FechaFinVigenciaPrecio >= GETDATE() `;
+      }
       await sql.connect(config);
 
-      const result =
-        await sql.query`select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico=${idPeriodoAcademico} and FechaFinVigenciaPrecio >= GETDATE() `;
+      const result = await sql.query(a);
       // console.log(result.recordsets[0]);
       return result.recordsets[0];
     } catch (err) {
@@ -120,30 +137,26 @@ export class AppService {
       importeVto3,
       idUsuario,
     );
-    try {
-      let pool = await sql.connect(config);
-      let result = await pool
-        .request()
-        .input('codConcepto', sql.Decimal, parseFloat(codConcepto))
-        .input(
-          'idPeriodoAcademico',
-          sql.Decimal,
-          parseFloat(idPeriodoAcademico),
-        )
-        .input('fechaInicioVigencia', sql.Date, fechaInicioVigencia)
-        .input('fechaFinVigencia', sql.Date, fechaFinVigencia)
-        .input('importeVto1', sql.Decimal, parseFloat(importeVto1))
-        .input('importeVto2', sql.Decimal, parseFloat(importeVto2))
-        .input('importeVto3', sql.Decimal, parseFloat(importeVto3))
-        .input('idUsuario', sql.Decimal, parseFloat(idUsuario))
-        .execute('ConceptoCCActualizarPrecio ');
 
-      console.log('exito');
-      return result;
-    } catch (error) {
-      console.log('error:', error);
+    let pool = await sql.connect(config);
+    let result = await pool
+      .request()
+      .input('codConcepto', sql.Decimal, parseFloat(codConcepto))
+      .input('idPeriodoAcademico', sql.Decimal, parseFloat(idPeriodoAcademico))
+      .input('fechaInicioVigencia', sql.Date, fechaInicioVigencia)
+      .input('fechaFinVigencia', sql.Date, fechaFinVigencia)
+      .input('importeVto1', sql.Decimal, parseFloat(importeVto1))
+      .input('importeVto2', sql.Decimal, parseFloat(importeVto2))
+      .input('importeVto3', sql.Decimal, parseFloat(importeVto3))
+      .input('idUsuario', sql.Decimal, parseFloat(idUsuario))
+      .execute('ConceptoCCActualizarPrecio ')
+      .catch((err) => {
+        console.log(err);
+        return err;
+      });
 
-      return error;
-    }
+    console.log('error', result);
+
+    return result;
   }
 }

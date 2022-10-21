@@ -145,18 +145,16 @@ export class AppService {
       .input('idPeriodoAcademico', sql.Decimal, parseFloat(idPeriodoAcademico))
       .input('fechaInicioVigencia', sql.Date, fechaInicioVigencia)
       .input('fechaFinVigencia', sql.Date, fechaFinVigencia)
-      .input('importeVto1', sql.Decimal, parseFloat(importeVto1))
-      .input('importeVto2', sql.Decimal, parseFloat(importeVto2))
-      .input('importeVto3', sql.Decimal, parseFloat(importeVto3))
+      .input('importeVto1', sql.Decimal(10, 2), parseFloat(importeVto1))
+      .input('importeVto2', sql.Decimal(10, 2), parseFloat(importeVto2))
+      .input('importeVto3', sql.Decimal(10, 2), parseFloat(importeVto3))
       .input('idUsuario', sql.Decimal, parseFloat(idUsuario))
       .execute('ConceptoCCActualizarPrecio ')
       .catch((err) => {
         console.log(err);
         return err;
       });
-
-    console.log('error', result);
-
+    console.log('Result:', result);
     return result;
   }
 }

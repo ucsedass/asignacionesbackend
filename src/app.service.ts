@@ -72,21 +72,36 @@ export class AppService {
     }
   }
 
-  async traerProgramaAcademico() {
+  async traerProgramaAcademico(body) {
+    console.log('parametros para programa academico:', body);
+    const { valorIdSede, idPeriodoAcademico, valorCodTipoConcepto } = body;
     try {
       await sql.connect(config);
       const result =
-        await sql.query`select distinct idPrograma,NombreProgramaAcademico from InfoConceptos order by NombreProgramaAcademico`;
+        await sql.query`select distinct idPrograma,NombreProgramaAcademico from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and codTipoConcepto =${valorCodTipoConcepto}  order by NombreProgramaAcademico`;
       return result.recordsets[0];
     } catch (error) {
       return error;
     }
   }
-  async traerConceptos() {
+  async traerConceptos(body) {
+    console.log('parametros para CONCEPTOS:', body);
+    const {
+      valorIdSede,
+      idPeriodoAcademico,
+      valorCodTipoConcepto,
+      valorProgramaAcademico,
+    } = body;
     try {
+      let a;
+      if (valorProgramaAcademico === '') {
+        a = `select distinct codConcepto,DescripcionConcepto from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico=${idPeriodoAcademico} and codTipoConcepto=${valorCodTipoConcepto} and idPrograma is Null order by codConcepto`;
+      } else {
+        a = `select distinct codConcepto,DescripcionConcepto from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico=${idPeriodoAcademico} and codTipoConcepto=${valorCodTipoConcepto} and idPrograma=${valorProgramaAcademico} order by codConcepto`;
+      }
+
       await sql.connect(config);
-      const result =
-        await sql.query`select distinct codConcepto,DescripcionConcepto from InfoConceptos order by codConcepto`;
+      const result = await sql.query(a);
       return result.recordsets[0];
     } catch (err) {
       return err;

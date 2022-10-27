@@ -24,17 +24,17 @@ export class AppController {
   traerSedes(): any {
     return this.appService.traerSedes();
   }
-  @Get('/conceptos')
-  traerConceptos(): any {
-    return this.appService.traerConceptos();
+  @Post('/conceptos')
+  traerConceptos(@Body() body: any): any {
+    return this.appService.traerConceptos(body);
   }
 
   @Get('/tipoconceptos')
   traerTipoConceptos(): any {
     return this.appService.traerTipoConceptos();
   }
-  @Get('/programaacademico')
-  traerProgramaAcademico(): any {
-    return this.appService.traerProgramaAcademico();
+  @Post('/programaacademico')
+  traerProgramaAcademico(@Body() body: any): any {
+    return this.appService.traerProgramaAcademico(body);
   }
 }

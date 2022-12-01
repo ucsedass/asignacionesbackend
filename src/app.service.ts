@@ -28,8 +28,6 @@ export class AppService {
       idPrograma,
     } = body;
 
-    console.log(body);
-
     try {
       let a;
       if (body.idPrograma === '0') {
@@ -65,7 +63,7 @@ export class AppService {
       await sql.connect(config);
 
       const result = await sql.query(a);
-      // console.log(result.recordsets[0]);
+
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -73,19 +71,25 @@ export class AppService {
   }
 
   async traerProgramaAcademico(body) {
-    console.log('parametros para programa academico:', body);
     const { valorIdSede, idPeriodoAcademico, valorCodTipoConcepto } = body;
     try {
       await sql.connect(config);
       const result =
-        await sql.query`select distinct idPrograma,NombreProgramaAcademico from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and codTipoConcepto =${valorCodTipoConcepto}  order by NombreProgramaAcademico`;
+        // await sql.query`select distinct idPrograma,NombreProgramaAcademico from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and codTipoConcepto =${valorCodTipoConcepto}  order by NombreProgramaAcademico`;
+
+        await sql.query` select distinct
+IIf(idPrograma is Null, '[General]',CONVERT (VARCHAR,idPrograma)) as idPrograma,
+IIf(NombreProgramaAcademico is null ,'[General]',CONVERT(VARCHAR,NombreProgramaAcademico)) as NombreProgramaAcademico
+from InfoConceptos
+where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and codTipoConcepto =${valorCodTipoConcepto}  order by NombreProgramaAcademico`;
+
       return result.recordsets[0];
     } catch (error) {
       return error;
     }
   }
   async traerConceptos(body) {
-    console.log('parametros para CONCEPTOS:', body);
+    console.log('Valores para traer Conceptos:', body);
     const {
       valorIdSede,
       idPeriodoAcademico,
@@ -94,7 +98,7 @@ export class AppService {
     } = body;
     try {
       let a;
-      if (valorProgramaAcademico === '') {
+      if (valorProgramaAcademico === '[General]') {
         a = `select distinct codConcepto,DescripcionConcepto from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico=${idPeriodoAcademico} and codTipoConcepto=${valorCodTipoConcepto} and idPrograma is Null order by codConcepto`;
       } else {
         a = `select distinct codConcepto,DescripcionConcepto from InfoConceptos where idSede = ${valorIdSede} and idPeriodoAcademico=${idPeriodoAcademico} and codTipoConcepto=${valorCodTipoConcepto} and idPrograma=${valorProgramaAcademico} order by codConcepto`;
@@ -102,6 +106,8 @@ export class AppService {
 
       await sql.connect(config);
       const result = await sql.query(a);
+
+      console.log(result.recordsets);
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -141,18 +147,6 @@ export class AppService {
       idUsuario,
     } = body;
 
-    console.log(
-      'PARAMETROS ',
-      codConcepto,
-      idPeriodoAcademico,
-      fechaInicioVigencia,
-      fechaFinVigencia,
-      importeVto1,
-      importeVto2,
-      importeVto3,
-      idUsuario,
-    );
-
     let pool = await sql.connect(config);
     let result = await pool
       .request()
@@ -171,7 +165,7 @@ export class AppService {
         console.log(err);
         return err;
       });
-    console.log('Result:', result);
+
     return result;
   }
 }

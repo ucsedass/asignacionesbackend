@@ -28,9 +28,11 @@ export class AppService {
       idPrograma,
     } = body;
 
+    console.log('DATOS PARA TRAER FECHAS DE VENCIMIENTO:', body);
+
     try {
       let a;
-      if (body.idPrograma === '0') {
+      if (body.idPrograma === '[General]') {
         a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma is null order by FechaInicioVigenciaPrecio`;
       } else {
         a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma=${idPrograma} order by FechaInicioVigenciaPrecio `;
@@ -55,7 +57,7 @@ export class AppService {
     } = body;
     try {
       let a;
-      if (body.idPrograma === '0') {
+      if (body.idPrograma === '[General]') {
         a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma is null and FechaFinVigenciaPrecio >= GETDATE() order by FechaInicioVigenciaPrecio`;
       } else {
         a = `select PrecioVto1,PrecioVto2,PrecioVto3,FechaInicioVigenciaPrecio,FechaFinVigenciaPrecio from InfoConceptos where codConcepto =${codConcepto} and codTipoConcepto =${codTipoConcepto} and idSede = ${idSede} and idPeriodoAcademico = ${idPeriodoAcademico} and idPrograma=${idPrograma} and FechaFinVigenciaPrecio >= GETDATE() order by FechaInicioVigenciaPrecio `;

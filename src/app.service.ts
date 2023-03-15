@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import Moment from 'moment';
 
 require('tls').DEFAULT_MIN_VERSION = 'TLSv1';
+var sql = require('mssql');
 
 var config = {
   user: 'devConceptos',
@@ -10,13 +11,12 @@ var config = {
   database: 'GestionConceptos',
   options: {
     trustedConnection: true,
-    encrypt: true,
+    encrypt: false, // modifique a false para que no me de error de certificado
     enableArithAbort: true,
     trustServerCertificate: true,
   },
 };
 
-var sql = require('mssql');
 @Injectable()
 export class AppService {
   async traerFechasVencimientos(body: any) {
@@ -28,7 +28,7 @@ export class AppService {
       idPrograma,
     } = body;
 
-    console.log('DATOS PARA TRAER FECHAS DE VENCIMIENTO:', body);
+    //   console.log('DATOS PARA TRAER FECHAS DE VENCIMIENTO:', body);
 
     try {
       let a;
@@ -91,7 +91,7 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
     }
   }
   async traerConceptos(body) {
-    console.log('Valores para traer Conceptos:', body);
+    //  console.log('Valores para traer Conceptos:', body);
     const {
       valorIdSede,
       idPeriodoAcademico,
@@ -109,7 +109,7 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
       await sql.connect(config);
       const result = await sql.query(a);
 
-      console.log(result.recordsets);
+      //console.log(result.recordsets);
       return result.recordsets[0];
     } catch (err) {
       return err;
@@ -131,10 +131,46 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
     try {
       let pool = await sql.connect(config);
       let result = await pool.request().execute('sedesTraerTodas');
+
       return result.recordsets[0];
     } catch (error) {
+      console.log(error);
       return error;
     }
+  }
+
+  async traerConceptosConfiguracion(body: any) {
+    const { idSede, idPeriodoAcademico, codTipoConcepto, mes, anio } = body;
+    console.log(body);
+    console.log(
+      'PARAMETRO DEL BODY:',
+      idSede,
+      idPeriodoAcademico,
+      codTipoConcepto,
+      mes,
+      anio,
+    );
+
+    let pool = await sql.connect(config);
+    let result = await pool
+      .request()
+
+      .input('codConcepto', sql.Int, 0)
+      .input('codTipoConcepto', sql.Int, parseInt(codTipoConcepto))
+      .input('idSede', sql.Int, parseInt(idSede))
+      .input('anio', sql.Int, parseInt(anio))
+      .input('mes', sql.Int, parseInt(mes))
+      .input('codUnidadAcademica', sql.Int, 0)
+      .input('idPrograma', sql.Int, 0)
+      .input('tipoPago', sql.Int, 0)
+      .input('idPeriodoAcademico', sql.Int, parseInt(idPeriodoAcademico))
+      .execute('InfoConceptosTraerParaConfiguracion')
+      .catch((err) => {
+        console.log(err);
+        return err;
+      });
+
+    return result.recordsets[0];
   }
 
   async agregarFechasVencimientos(body: any) {

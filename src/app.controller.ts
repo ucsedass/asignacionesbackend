@@ -5,6 +5,10 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('/')
+  prueba() {
+    return 'sadsads';
+  }
   @Post('/fechasvencimientos')
   traerFechasVencimientos(@Body() body: any): any {
     return this.appService.traerFechasVencimientos(body);
@@ -20,10 +24,16 @@ export class AppController {
     return this.appService.agregarFechasVencimientos(body);
   }
 
+  @Post('/conceptosconfiguracion')
+  agregarConceptoConfiguracion(@Body() body: any): any {
+    return this.appService.traerConceptosConfiguracion(body);
+  }
+
   @Get('/sedes')
   traerSedes(): any {
     return this.appService.traerSedes();
   }
+
   @Post('/conceptos')
   traerConceptos(@Body() body: any): any {
     return this.appService.traerConceptos(body);

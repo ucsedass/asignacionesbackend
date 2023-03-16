@@ -9,11 +9,12 @@ var config = {
   password: 'qwerty',
   server: 'sgo-desarrollo',
   database: 'GestionConceptos',
+  timezone: 'ES',
   options: {
     trustedConnection: true,
     encrypt: false, // modifique a false para que no me de error de certificado
     enableArithAbort: true,
-    trustServerCertificate: true,
+    trustServerCertificate: false,
   },
 };
 
@@ -169,7 +170,7 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
         console.log(err);
         return err;
       });
-
+    console.log(Date.now().toString());
     return result.recordsets[0];
   }
 

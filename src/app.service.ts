@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import Moment from 'moment';
 
 require('tls').DEFAULT_MIN_VERSION = 'TLSv1';
 var sql = require('mssql');
@@ -9,7 +8,7 @@ var config = {
   password: 'qwerty',
   server: 'sgo-desarrollo',
   database: 'GestionConceptos',
-  timezone: 'ES',
+
   options: {
     trustedConnection: true,
     encrypt: false, // modifique a false para que no me de error de certificado
@@ -170,7 +169,7 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
         console.log(err);
         return err;
       });
-    console.log(Date.now().toString());
+
     return result.recordsets[0];
   }
 
@@ -198,7 +197,7 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
       .input('importeVto3', sql.Decimal(10, 2), parseFloat(importeVto3))
       .input('idUsuario', sql.Decimal, parseFloat(idUsuario))
       .output('ok', sql.bit)
-      .output('mensaje', sql.VarChar(50))
+      .output('mensaje', sql.VarChar(150))
       .execute('ConceptoCCActualizarPrecio ')
       .catch((err) => {
         console.log(err);

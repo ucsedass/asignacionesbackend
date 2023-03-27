@@ -199,6 +199,7 @@ where idSede = ${valorIdSede} and idPeriodoAcademico = ${idPeriodoAcademico} and
       .output('ok', sql.bit)
       .output('mensaje', sql.VarChar(150))
       .execute('ConceptoCCActualizarPrecio ')
+
       .catch((err) => {
         console.log(err);
         return err;
